@@ -1,4 +1,7 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 def cargar_datos(ruta):
     """Carga el dataset desde un CSV y lo devuelve como DataFrame."""
@@ -27,3 +30,41 @@ def limpiar_datos(df):
     df = df.drop(columns=["reservation_status", "reservation_status_date"])
 
     return df
+
+def separar_features_objetivo(df, objetivo="is_canceled"):
+    """Separa el DataFrame en features (X) y variable objetivo (y)."""
+    X = df.drop(columns=objetivo)
+    y = df[objetivo]
+    return X, y
+
+
+def dividir_train_test(X, y, test_size=0.2, random_state=42):
+    """Divide X e y en conjuntos de entrenamiento y prueba (estratificado)."""
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=random_state, stratify=y
+    )
+    return X_train, X_test, y_train, y_test
+
+
+def construir_preprocesador(X):
+    """Construye el ColumnTransformer: escala numéricas y codifica categóricas."""
+    columnas_numericas = X.select_dtypes(include="number").columns.tolist()
+    columnas_categoricas = X.select_dtypes(include="object").columns.tolist()
+
+    preprocesador = ColumnTransformer(
+        transformers=[
+            ("num", StandardScaler(), columnas_numericas),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), columnas_categoricas),
+        ]
+    )
+    return preprocesador
+
+def preparar_datos(ruta):
+    """Flujo completo: carga, limpia, separa, divide y construye el preprocesador.
+    Devuelve los conjuntos train/test y el preprocesador listo para usar."""
+    df = cargar_datos(ruta)
+    df = limpiar_datos(df)
+    X, y = separar_features_objetivo(df)
+    X_train, X_test, y_train, y_test = dividir_train_test(X, y)
+    preprocesador = construir_preprocesador(X_train)
+    return X_train, X_test, y_train, y_test, preprocesador
