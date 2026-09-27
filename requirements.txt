@@ -3,3 +3,7 @@ numpy==2.4.6
 scikit-learn==1.9.1
 matplotlib==3.11.2
 seaborn==0.13.2
+xgboost==3.4.1
+tensorflow==2.21.0
+ipykernel==7.3.0
+ipython==9.17.1
