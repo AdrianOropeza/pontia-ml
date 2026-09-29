@@ -25,7 +25,7 @@ class ClasificadorKeras(ClassifierMixin, BaseEstimator):
         preprocesador,
         random_state=42,
         epochs=20,
-        batch_size=256,
+        batch_size=128,
         patience=3,
         verbose=0,
     ):
@@ -50,7 +50,7 @@ class ClasificadorKeras(ClassifierMixin, BaseEstimator):
             self.preprocesador_.fit_transform(X, y)
         )
 
-        # Conservar el escalado adicional de la exploración
+        # Aplicar un escalado adicional antes del entrenamiento de la red
         self.escalador_ = StandardScaler()
         X_red = self.escalador_.fit_transform(X_red).astype(np.float32)
 
@@ -111,26 +111,26 @@ class ClasificadorKeras(ClassifierMixin, BaseEstimator):
 
 
 class ModelTrainer:
-    """Construye y entrena los cinco modelos con el preprocesador de la parte A."""
+    """Construye y entrena los cinco modelos con un preprocesador común."""
 
     def __init__(
         self,
         preprocesador,
         random_state=42,
         epochs=20,
-        batch_size=256,
+        batch_size=128,
         patience=3,
         verbose=0,
     ):
         estimadores = {
             "regresion_logistica": LogisticRegression(max_iter=1000),
             "arbol_decision": DecisionTreeClassifier(
-                max_depth=8, min_samples_leaf=20, random_state=random_state
+                max_depth=12, min_samples_leaf=10, random_state=random_state
             ),
             "random_forest": RandomForestClassifier(
                 n_estimators=100,
                 max_depth=12,
-                min_samples_leaf=10,
+                min_samples_leaf=5,
                 random_state=random_state,
                 n_jobs=-1,
             ),
@@ -179,7 +179,7 @@ class ModelTrainer:
         return modelo
 
     def entrenar_todos(self, X_train, y_train, X_val=None, y_val=None):
-        """Devuelve los cinco modelos entrenados para entregarlos a C."""
+        """Entrena y devuelve los cinco modelos configurados."""
         for nombre in self.modelos:
             self.entrenar_modelo(nombre, X_train, y_train, X_val, y_val)
         return self.modelos
