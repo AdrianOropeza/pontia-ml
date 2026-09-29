@@ -247,5 +247,9 @@ Por último, antes de utilizar el sistema en producción sería conveniente defi
 
 - **Adrián Oropeza (Parte A):** análisis exploratorio de datos y diseño del preprocesado.
 - **Jorge El Ferdaoussi García (Parte B):** entrenamiento de modelos y búsqueda de hiperparámetros.
-- **Alberto Medina Pérez (Parte C):** definición de la metodología de evaluación, comparación y selección de modelos, evaluación final sobre test, generación de visualizaciones, integración del flujo completo de ejecución y desarrollo del mecanismo de inferencia sobre nuevas reservas.
+- **Alberto Medina Pérez (Parte C):** evaluación y comparación de modelos, selección final e integración del flujo de predicción.
+
+15. ## Repositorio
+
+[Acceder al repositorio en GitHub](https://github.com/AdrianOropeza/pontia-ml/tree/main)
 
