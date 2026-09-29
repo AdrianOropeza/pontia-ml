@@ -76,3 +76,28 @@ Los datos se dividen en entrenamiento (80 %) y test (20 %) mediante train_test_s
 Binarización de agent y company: se optó por binarizar estas variables por su alta cardinalidad y el riesgo de sobreajuste. Como limitación, se pierde la posibilidad de capturar patrones de cancelación específicos por agencia o empresa. Una mejora futura sería conservar el top-N agentes/empresas más frecuentes (como se hizo con country) o aplicar target encoding para representar cada categoría por su tasa histórica de cancelación, capturando esos patrones sin explotar la dimensionalidad.
 Variables temporales: arrival_date_month se trató como categórica con One-Hot, ignorando su orden natural y su carácter cíclico. Una mejora sería una codificación cíclica (seno/coseno) o un tratamiento ordinal que respete la secuencia de los meses.
 Variables de fecha numéricas (arrival_date_year, arrival_date_week_number, arrival_date_day_of_month) se escalaron como magnitudes numéricas; un tratamiento más fino las consideraría categorías temporales.
+
+
+5. Modelado y comparación de modelos (parte B)
+
+5.1 Modelos entrenados
+
+Se entrenaron cinco modelos de clasificación para predecir is_canceled: regresión logística, árbol de decisión, Random Forest, XGBoost y una red neuronal con Keras. Los cuatro primeros combinan el preprocesador de la parte A y el clasificador en un Pipeline. La red neuronal utiliza el mismo preprocesador, convierte su salida a datos numéricos densos y aplica un escalado adicional antes de entrenar. La clase ModelTrainer de src/model_trainer.py permite construir y entrenar los cinco modelos con una interfaz común.
+
+5.2 Entrenamiento y búsqueda de hiperparámetros
+
+Dentro del conjunto de entrenamiento se separó un 20 % para validación, manteniendo la proporción de cancelaciones. Primero se entrenó cada modelo con parámetros iniciales razonables. Después se aplicó GridSearchCV a los cinco modelos para comparar varias combinaciones de hiperparámetros. La búsqueda utilizó validación cruzada estratificada de 3 particiones y F1 como criterio de elección. Cada combinación se entrenó solo con los datos de ajuste; el conjunto de validación se utilizó después para comparar las predicciones. El conjunto de test quedó reservado para la evaluación final.
+
+En la red neuronal se probaron distintas combinaciones de épocas y tamaño de lote. Su salida sigmoide estima la probabilidad de cancelación, que se convierte en clase usando un umbral de 0,5. Los experimentos y las tablas completas están en notebooks/modelos_exploracion.ipynb.
+
+5.3 Resultados en validación
+
+| Modelo | Parámetros elegidos por GridSearchCV | F1 inicial | F1 con GridSearchCV | ROC-AUC con GridSearchCV |
+| --- | --- | ---: | ---: | ---: |
+| Regresión logística | C=1 | 0,7263 | 0,7263 | 0,8948 |
+| Árbol de decisión | max_depth=12; min_samples_leaf=10 | 0,7532 | 0,7827 | 0,9206 |
+| Random Forest | max_depth=12; min_samples_leaf=5 | 0,7590 | 0,7617 | 0,9301 |
+| XGBoost | max_depth=5; learning_rate=0,1 | 0,8077 | 0,8077 | 0,9408 |
+| Red neuronal Keras | epochs=20; batch_size=128 | 0,8083 | 0,8092 | 0,9365 |
+
+La mayor mejora de F1 se obtuvo con el árbol de decisión. Random Forest y la red neuronal mejoraron ligeramente; en regresión logística y XGBoost la búsqueda eligió los mismos valores que ya se habían usado inicialmente. Estos resultados corresponden a validación y sirven para comparar el modelado; la evaluación final con test y la selección del modelo definitivo corresponden a la parte C.
