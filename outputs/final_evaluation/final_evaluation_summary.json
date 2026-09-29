@@ -1,0 +1,36 @@
+{
+  "selection": {
+    "model_key": "red_neuronal",
+    "model_name": "Red neuronal (Keras)",
+    "primary_metric": "F1",
+    "threshold": 0.5,
+    "validation_metrics": {
+      "Accuracy": 0.861278333246087,
+      "Precision": 0.8274637466706126,
+      "Recall": 0.7902769926512154,
+      "F1": 0.808442966604019,
+      "ROC-AUC": 0.9365632327733674
+    },
+    "selected_before_test": true
+  },
+  "final_test": {
+    "metrics": {
+      "Accuracy": 0.8640589664125974,
+      "Precision": 0.8251074207409128,
+      "Recall": 0.8032786885245902,
+      "F1": 0.8140467461044913,
+      "ROC-AUC": 0.9398355913955568
+    },
+    "used_for_model_selection": false
+  },
+  "configuration": {
+    "random_state": 42,
+    "validation_size": 0.2
+  },
+  "dataset_sizes": {
+    "train": 95512,
+    "adjustment": 76409,
+    "validation": 19103,
+    "test": 23878
+  }
+}
