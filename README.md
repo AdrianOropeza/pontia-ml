@@ -247,7 +247,7 @@ Por último, antes de utilizar el sistema en producción sería conveniente defi
 
 - **Adrián Oropeza (Parte A):** análisis exploratorio de datos y diseño del preprocesado.
 - **Jorge El Ferdaoussi García (Parte B):** entrenamiento de modelos y búsqueda de hiperparámetros.
-- **Alberto Medina Pérez (Parte C):** evaluación y comparación de modelos, selección final e integración del flujo de predicción.
+- **Alberto Medina Pérez (Parte C):** comparación de modelos, evaluación y predicción final.
 
 15. ## Repositorio
 
